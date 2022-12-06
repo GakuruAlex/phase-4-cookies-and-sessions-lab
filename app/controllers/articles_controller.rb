@@ -7,20 +7,16 @@ class ArticlesController < ApplicationController
   end
  
   def show
-    session[:pages_view] ||= 0
-    session[:pages_view] =  session[:pages_view].to_i + 1
-   
-    article = Article.find(params[:id])
-
-    if session[:pages_view] < 4
     
-
-    render json: article
-
-    session[:pages_view] = session[:pages_view] + 1
    
-    else 
-      render json: {"error": "Maximum articles  viewed subscribe to continue"}, status: :unauthorized
+    session[:page_views] ||= 0
+    session[:page_views] += 1
+
+    if session[:page_views] <= 3
+      article = Article.find(params[:id])
+      render json: article
+    else
+      render json: { error: "Maximum pageview limit reached" }, status: :unauthorized
     end
   end
 
